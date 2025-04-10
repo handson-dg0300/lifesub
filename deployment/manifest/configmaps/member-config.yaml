@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: member-config
+  namespace: dg0300-lifesub-ns
+data:
+  SERVER_PORT: "8080"
+  POSTGRES_HOST: "postgres-member-postgresql"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "member"
+  JPA_DDL_AUTO: "update"
+  JPA_SHOW_SQL: "true"

@@ -5,9 +5,9 @@ spring:
   application:
     name: member-service
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:member}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:15432}/${POSTGRES_DB:member}
     username: ${POSTGRES_USER:admin}
-    password: ${POSTGRES_PASSWORD:Passw0rd}
+    password: ${POSTGRES_PASSWORD:Hi5Jessica!}
     driver-class-name: org.postgresql.Driver
 
   # JPA 설정
@@ -30,6 +30,23 @@ allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+# Actuator 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
 
 logging:
   level:

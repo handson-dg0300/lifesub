@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: member-configmap
+data:
+  SERVER_PORT: "8081"
+  POSTGRES_HOST: "postgres-member-postgresql"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "member"
+  POSTGRES_USER: "admin"
+  JPA_DDL_AUTO: "update"
+  JPA_SHOW_SQL: "true"
+  ALLOWED_ORIGINS: "http://20.249.171.38"
+  JWT_ACCESS_TOKEN_VALIDITY: "3600000"
+  JWT_REFRESH_TOKEN_VALIDITY: "86400000"
