@@ -101,21 +101,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to ACR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.ACR_REGISTRY }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
       - name: Read deployment environment variables
         id: env-vars
         run: |
           # Parse environment variables from deploy_env_vars
           REGISTRY=$(grep "^registry=" deployment/deploy_env_vars | cut -d '=' -f2)
           IMAGE_ORG=$(grep "^image_org=" deployment/deploy_env_vars | cut -d '=' -f2)
-          echo "ACR_REGISTRY=$REGISTRY" >> $GITHUB_ENV
+          echo "REGISTRY=$REGISTRY" >> $GITHUB_ENV
           echo "IMAGE_ORG=$IMAGE_ORG" >> $GITHUB_ENV
+          
+          echo "Registry: $REGISTRY"
+          echo "Image Org: $IMAGE_ORG"
+
+      - name: Log in to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and push Member image
         uses: docker/build-push-action@v5
@@ -126,7 +129,7 @@ jobs:
           build-args: |
             BUILD_LIB_DIR=member/build/libs
             ARTIFACTORY_FILE=member.jar
-          tags: ${{ env.ACR_REGISTRY }}/${{ env.IMAGE_ORG }}/member:${{ needs.build.outputs.timestamp }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_ORG }}/member:${{ needs.build.outputs.timestamp }}
 
       - name: Build and push Mysub image
         uses: docker/build-push-action@v5
@@ -137,7 +140,7 @@ jobs:
           build-args: |
             BUILD_LIB_DIR=mysub-infra/build/libs
             ARTIFACTORY_FILE=mysub.jar
-          tags: ${{ env.ACR_REGISTRY }}/${{ env.IMAGE_ORG }}/mysub:${{ needs.build.outputs.timestamp }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_ORG }}/mysub:${{ needs.build.outputs.timestamp }}
 
       - name: Build and push Recommend image
         uses: docker/build-push-action@v5
@@ -148,7 +151,7 @@ jobs:
           build-args: |
             BUILD_LIB_DIR=recommend/build/libs
             ARTIFACTORY_FILE=recommend.jar
-          tags: ${{ env.ACR_REGISTRY }}/${{ env.IMAGE_ORG }}/recommend:${{ needs.build.outputs.timestamp }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_ORG }}/recommend:${{ needs.build.outputs.timestamp }}
 
   deploy:
     name: Deploy to AKS
